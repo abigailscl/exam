@@ -1,16 +1,40 @@
 package com.exam.cabascango.exam.config;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+import org.bson.types.Decimal128;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
+    @Autowired
+    private ApplicationValues appValues;
+
+    @Override
+    protected String getDatabaseName() {
+        return appValues.getDbname();
+    }
+
     @Override
     public MongoClient mongoClient() {
 
         return MongoClients.create("mongodb+srv://" + appValues.getUser() +
                 ":" + appValues.getPasword() +
                 "@" + appValues.getCluster() +
-                "/" + appValues.getDbname() +
+                "/" + getDatabaseName() +
                 "?retryWrites=true&w=majority");
     }
 
